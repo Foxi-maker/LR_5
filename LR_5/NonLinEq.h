@@ -17,7 +17,7 @@ public:
 
 	void LocalizationRoots();
 
-	void Bisection();
+	bool Bisection();
 
 	void StreamOpen();
 	void StreamClose();

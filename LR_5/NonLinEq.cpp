@@ -19,6 +19,7 @@ void NonLinEq::LocalizationRoots()
 	{
 		double temp = x + h;
 		//std::cout << "x: " << x << "\n";
+		//std::cout << "fun(x): " << fun(x) << "\n";
 		//std::cout << "temp: " << temp << "\n";
 
 		if (fun(x)*fun(temp) <= DBL_EPSILON)
@@ -27,7 +28,7 @@ void NonLinEq::LocalizationRoots()
 			//std::cout << "fun(x): "<<fun(x)<<"\n";
 			//std::cout << "temp: " << temp << "\n";
 			//std::cout << "fun(temp): " << fun(temp) << "\n";
-			if (fabs(fun(x))<DBL_EPSILON)
+			if (fabs(fun(x)) < DBL_EPSILON)
 			{
 				roots.push_back(x);
 				continue;
@@ -43,15 +44,15 @@ void NonLinEq::LocalizationRoots()
 		}
 	}
 
-	stream << "Localization:\n";
-	int i = 1;
-	for (const auto& l : local)
-	{
-		stream << l << " ";
-		if (i % 2 == 0)
-			stream << "\n";
-		i++;
-	}
+	//stream << "Localization:\n";
+	//int i = 1;
+	//for (const auto& l : local)
+	//{
+	//	stream << l << " ";
+	//	if (i % 2 == 0)
+	//		stream << "\n";
+	//	i++;
+	//}
 
 	//stream << "Roots:\n";
 	//for (const auto& r : roots)
@@ -59,14 +60,50 @@ void NonLinEq::LocalizationRoots()
 	//	stream << r << " ";
 	//}
 
-	std::cout << "Localization:\n";
-	i = 1;
-	for (const auto& l : local)
+	//std::cout << "Localization:\n";
+	//i = 1;
+	//for (const auto& l : local)
+	//{
+	//	std::cout << l << " ";
+	//	if (i % 2 == 0)
+	//		std::cout << "\n";
+	//	i++;
+	//}
+
+	//std::cout << "Roots:\n";
+	//for (const auto& r : roots)
+	//{
+	//	std::cout << r << " ";
+	//}
+	//std::cout << "\n";
+}
+
+bool NonLinEq::Bisection()
+{
+	if (!local.size())
 	{
-		std::cout << l << " ";
-		if (i % 2 == 0)
-			std::cout << "\n";
-		i++;
+		std::cout << "Нет отрезков локализации!\n";
+		return 1;
+	}
+
+	int size = local.size();
+	double leftSide;
+	double rightSide;
+	double middle;
+
+	for (int i = 0; i < size; i += 2)
+	{
+		leftSide = local[i];
+		rightSide = local[i + 1];
+		while ((rightSide - leftSide) > 2 * eps)
+		{
+			middle = leftSide + (rightSide - leftSide) / 2;
+			if (fun(middle)*fun(rightSide) <= DBL_EPSILON)
+				leftSide = middle;
+			else
+				rightSide = middle;
+		}
+		roots.push_back(middle);
 	}
 
 	std::cout << "Roots:\n";
@@ -75,12 +112,12 @@ void NonLinEq::LocalizationRoots()
 		std::cout << r << " ";
 	}
 	std::cout << "\n";
-}
 
-void NonLinEq::Bisection()
-{
-	if (!local.size())
-		std::cout << "Нет отрезков локализации!\n";
+	stream << "Roots:\n";
+	for (const auto& r : roots)
+	{
+		stream << r << " ";
+	}
 }
 
 void NonLinEq::StreamOpen()
