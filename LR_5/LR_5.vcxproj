@@ -154,10 +154,12 @@
     <ClCompile Include="function.cpp" />
     <ClCompile Include="LR_5.cpp" />
     <ClCompile Include="NonLinEq.cpp" />
+    <ClCompile Include="SystemNonLinEq.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header.h" />
     <ClInclude Include="NonLinEq.h" />
+    <ClInclude Include="SystemNonLinEq.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

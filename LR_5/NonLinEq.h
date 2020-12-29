@@ -12,12 +12,15 @@ class NonLinEq
 
 	static std::fstream stream;
 	std::string streamName;	
+
+	double Derivative(double);
 public:
 	NonLinEq(std::function<double(double)>, double, double, std::string);
 
 	void LocalizationRoots();
 
 	bool Bisection();
+	bool Newton();
 
 	void StreamOpen();
 	void StreamClose();

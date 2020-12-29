@@ -1,5 +1,10 @@
 #include "Header.h"
 
+double NonLinEq::Derivative(double value)
+{
+	return (fun(value+eps)-fun(value))/eps;
+}
+
 NonLinEq::NonLinEq(std::function<double(double)> f, double a, double b, std::string fileName)
 {
 	fun = f;
@@ -12,22 +17,16 @@ NonLinEq::NonLinEq(std::function<double(double)> f, double a, double b, std::str
 void NonLinEq::LocalizationRoots()
 {
 	std::cout << streamName << "\n";
+
 	//равномерное разбиение 
 	double h = 0.05;
-	//double end = b - 0.04;
+
 	for (double x = left; x < right; x += h)
 	{
 		double temp = x + h;
-		//std::cout << "x: " << x << "\n";
-		//std::cout << "fun(x): " << fun(x) << "\n";
-		//std::cout << "temp: " << temp << "\n";
 
 		if (fun(x)*fun(temp) <= DBL_EPSILON)
 		{
-			//std::cout << "x: " << x << "\n";
-			//std::cout << "fun(x): "<<fun(x)<<"\n";
-			//std::cout << "temp: " << temp << "\n";
-			//std::cout << "fun(temp): " << fun(temp) << "\n";
 			if (fabs(fun(x)) < DBL_EPSILON)
 			{
 				roots.push_back(x);
@@ -44,46 +43,22 @@ void NonLinEq::LocalizationRoots()
 		}
 	}
 
-	//stream << "Localization:\n";
-	//int i = 1;
-	//for (const auto& l : local)
-	//{
-	//	stream << l << " ";
-	//	if (i % 2 == 0)
-	//		stream << "\n";
-	//	i++;
-	//}
-
-	//stream << "Roots:\n";
-	//for (const auto& r : roots)
-	//{
-	//	stream << r << " ";
-	//}
-
-	//std::cout << "Localization:\n";
-	//i = 1;
-	//for (const auto& l : local)
-	//{
-	//	std::cout << l << " ";
-	//	if (i % 2 == 0)
-	//		std::cout << "\n";
-	//	i++;
-	//}
-
-	//std::cout << "Roots:\n";
-	//for (const auto& r : roots)
-	//{
-	//	std::cout << r << " ";
-	//}
-	//std::cout << "\n";
 }
 
 bool NonLinEq::Bisection()
 {
+	stream << "Bisection method:\n";
+
 	if (!local.size())
 	{
-		std::cout << "Нет отрезков локализации!\n";
-		return 1;
+		std::cout << "No localization segments!\n";
+		std::cout << "Roots:\n";
+		for (const auto& r : roots)
+		{
+			std::cout << r << " ";
+		}
+		std::cout << "\n";
+		return false;
 	}
 
 	int size = local.size();
@@ -91,12 +66,18 @@ bool NonLinEq::Bisection()
 	double rightSide;
 	double middle;
 
+	std::vector<int> iterations;
+
 	for (int i = 0; i < size; i += 2)
 	{
+		iterations.push_back(0);
+
 		leftSide = local[i];
 		rightSide = local[i + 1];
 		while ((rightSide - leftSide) > 2 * eps)
 		{
+			iterations.back()++;
+
 			middle = leftSide + (rightSide - leftSide) / 2;
 			if (fun(middle)*fun(rightSide) <= DBL_EPSILON)
 				leftSide = middle;
@@ -105,6 +86,14 @@ bool NonLinEq::Bisection()
 		}
 		roots.push_back(middle);
 	}
+
+	stream << "Iterations:\n";
+	for (const auto& iter : iterations)
+	{
+		stream << iter << " ";
+	}
+	stream << "\n";
+
 
 	std::cout << "Roots:\n";
 	for (const auto& r : roots)
@@ -118,6 +107,95 @@ bool NonLinEq::Bisection()
 	{
 		stream << r << " ";
 	}
+	stream << "\n";
+
+	local.clear();
+	roots.clear();
+	return true;
+}
+
+bool NonLinEq::Newton()
+{
+	stream <<"Newton's method:\n";
+
+	if (!local.size())
+	{
+		//std::cout << "No localization segments!\n";
+		std::cout << "Roots:\n";
+		for (const auto& r : roots)
+		{
+			std::cout << r << " ";
+		}
+		std::cout << "\n";
+		return false;
+	}
+
+	double x,x_k;
+
+	int size = local.size();
+	double leftSide;
+	double rightSide;
+
+	std::vector<int> iterations;
+
+	for (int i = 0; i < size; i += 2)
+	{
+		iterations.push_back(0);
+
+		leftSide = local[i];
+		rightSide = local[i + 1];
+
+		//Начальное приближение
+		x = (rightSide*fun(leftSide) - leftSide * fun(rightSide)) / (fun(leftSide) - fun(rightSide));
+
+		do
+		{
+			iterations.back()++;
+
+			x_k = x;
+			x = x_k - fun(x_k) / Derivative(x_k);
+
+			//Проверка на выход из отрезка локализации
+			if (x<leftSide || x>rightSide)
+			{
+				std::cout << "x: " << x << "\n";
+				//Итерация по методу хорд
+				if (fun(x_k)*fun(rightSide) < 0)
+					x = x_k - (fun(x_k)*(x_k - rightSide)) / (fun(x_k) - fun(rightSide));
+				else
+					x = x_k - (fun(x_k)*(x_k - leftSide)) / (fun(x_k) - fun(leftSide));
+			}
+
+		} while (fabs(x_k - x) > eps);
+
+		roots.push_back(x);
+	}
+
+	stream << "Iterations:\n";
+	for (const auto& iter : iterations)
+	{
+		stream << iter << " ";
+	}
+	stream << "\n";
+
+	std::cout << "Roots:\n";
+	for (const auto& r : roots)
+	{
+		std::cout << r << " ";
+	}
+	std::cout << "\n";
+
+	stream << "Roots:\n";
+	for (const auto& r : roots)
+	{
+		stream << r << " ";
+	}
+	stream << "\n";
+
+	local.clear();
+	roots.clear();
+
+	return true;
 }
 
 void NonLinEq::StreamOpen()
