@@ -26,12 +26,23 @@ double testf::fun5(double val)
 	return pow(val,4)-1;
 }
 
-double testf::system::fun1(double val1, double val2)
+//testf::system system0
+
+//double testf::system::fun1(double val1, double val2)
+//{
+//	return pow(val1, 2) - pow(val2, 2) - 15.;
+//}
+//
+//double testf::system::fun2(double val1, double val2)
+//{
+//	return val1 * val2 + 4;
+//}
+
+double testf::system11(double val1, double val2)
 {
 	return pow(val1, 2) - pow(val2, 2) - 15.;
 }
-
-double testf::system::fun2(double val1, double val2)
+double testf::system12(double val1, double val2)
 {
 	return val1 * val2 + 4;
 }
@@ -50,6 +61,16 @@ void testf::system2(double& val1, double& val2)
 	double temp2 = val2;
 	val1 = pow(temp1, 2) + pow(temp2, 2) + temp1 + temp2 - 8.;
 	val2 = pow(temp1, 2) + pow(temp2, 2) + temp1 * temp2 - 7.;
+}
+
+
+double testf::system31(double val1, double val2)
+{
+	return sqrt(val1) * (sqrt(val1 + 10.) + sqrt(val2)) - 100.*sqrt(val2);
+}
+double testf::system32(double val1, double val2)
+{
+	return sqrt(val1) + sqrt(val2) - 10.;
 }
 
 void testf::system3(double& val1, double& val2)

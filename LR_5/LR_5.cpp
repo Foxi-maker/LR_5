@@ -24,18 +24,16 @@ int main()
 	//}
 
 	std::vector<SystemNonLinEq> systemEquations;
-	systemEquations.emplace_back(testf::system1, -10., 10., std::string("system1"));
+	//systemEquations.emplace_back(testf::system11, testf::system12, -10., 10., std::string("system1"));
 	//systemEquations.emplace_back(testf::system2, -10., 10., std::string("system2"));
-	//systemEquations.emplace_back(testf::system3, -100., 100., std::string("system3"));
-
-	std::vector<SystemNonLinEq> systemEquations;
+	systemEquations.emplace_back(testf::system31, testf::system32, 80., 90., std::string("system3"));
 
 
 	for (auto& s : systemEquations)
 	{
 		s.StreamOpen();
 
-		s.Grid(0.5);
+		s.Grid(1.);
 		s.Newton();
 
 		s.StreamClose();
