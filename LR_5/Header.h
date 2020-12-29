@@ -23,6 +23,7 @@ namespace testf
 	double fun2(double);
 	double fun3(double);
 	double fun4(double);
+	double dfun4(double);
 	double fun5(double);
 
 	//системы нелинейных уравнений

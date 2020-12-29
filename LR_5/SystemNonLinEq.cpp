@@ -20,7 +20,7 @@ SystemNonLinEq::SystemNonLinEq(std::function<double(double, double)> f1, std::fu
 
 void SystemNonLinEq::Grid(double h)
 {
-	int n = 2 * right / h;
+	int n = (right-left) / h;
 
 	for (int i = 0; i <= n; i++)
 		omega.push_back(left + i * h);
@@ -76,38 +76,6 @@ bool SystemNonLinEq::Newton()
 
 				x_k = x;
 				y_k = y;
-
-//--------------------------------------------------------------------
-				//Вектор поправки (метод простых итераций)
-			//	x_pk = fun1(0., 0.);
-			//	y_pk = fun2(0., 0.);
-			//	do {
-			//		
-			//		x_p = (-Derivative(fun1, x_pk, y_pk, 1) + 1.)*x_pk - Derivative(fun1, x_pk, y_pk, 2)*y_pk - fun1(x_pk, y_pk);
-			//		y_p = -Derivative(fun2, x_pk, y_pk, 1)*x_pk + (-Derivative(fun2, x_pk, y_pk, 2)+1.)*y_pk - fun2(x_pk, y_pk);
-			//		
-			//		std::cout << "x_p: " << x_p << ", y_p: " << y_p << "\n";
-
-			//		//Норма разницы
-			//		if (fabs(x_p - x_pk) > fabs(y_p - y_pk))
-			//			dif = fabs(x_p - x_pk);
-			//		else
-			//			dif = fabs(y_p - y_pk);
-
-			//		if (1.e+6 > x_p || 1.e+6 > y_p)
-			//		{
-			//			std::cout << "Rasxoditsya\n";
-			//			return false;
-			//		}
-
-			//		x_pk = x_p;
-			//		y_pk = y_p;
-			//	} while (dif > eps);
-
-
-			//	x = x_k + x_p;
-			//	y = y_k + y_p;
-//--------------------------------------------------------------------
 				
 				jacobi.push_back(Derivative(fun1, x_k, y_k, 1));
 				jacobi.push_back(Derivative(fun1, x_k, y_k, 2));
@@ -156,8 +124,8 @@ bool SystemNonLinEq::Newton()
 	for (const auto& iter : iterations)
 		stream << iter << "\n";
 
-	//for (int i = 0; i < rootX.size(); i++)
-	//	std::cout << rootX[i] << " " << rootY[i] << "\n";
+	for (int i = 0; i < rootX.size(); i++)
+		std::cout << rootX[i] << " " << rootY[i] << "\n";
 
 	//Вывод для отрисовки
 	//std::cout << "Roots:\n";

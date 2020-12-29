@@ -4,6 +4,7 @@
 class NonLinEq
 {
 	std::function<double(double)> fun;
+	std::function<double(double)> dfun;
 	std::vector<double> local;						//локализация корней
 	std::vector<double> roots;						//массив корней
 	
@@ -15,7 +16,7 @@ class NonLinEq
 
 	double Derivative(double);
 public:
-	NonLinEq(std::function<double(double)>, double, double, std::string);
+	NonLinEq(std::function<double(double)>, std::function<double(double)>, double, double, std::string);
 
 	void LocalizationRoots();
 

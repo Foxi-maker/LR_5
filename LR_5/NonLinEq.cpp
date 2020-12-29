@@ -5,9 +5,10 @@ double NonLinEq::Derivative(double value)
 	return (fun(value+eps)-fun(value))/eps;
 }
 
-NonLinEq::NonLinEq(std::function<double(double)> f, double a, double b, std::string fileName)
+NonLinEq::NonLinEq(std::function<double(double)> f, std::function<double(double)>df, double a, double b, std::string fileName)
 {
 	fun = f;
+	dfun = df;
 	streamName = fileName;
 
 	left = a;
@@ -42,7 +43,9 @@ void NonLinEq::LocalizationRoots()
 			local.push_back(temp);
 		}
 	}
-
+	stream << "Localization:\n";
+	for (const auto& l : local)
+		stream << l << "\n";
 }
 
 bool NonLinEq::Bisection()
@@ -67,11 +70,12 @@ bool NonLinEq::Bisection()
 	double middle;
 
 	std::vector<int> iterations;
-
+	int indexRoot = 1;
 	for (int i = 0; i < size; i += 2)
 	{
 		iterations.push_back(0);
-
+		stream << "Root " << indexRoot << "\n";
+		indexRoot++;
 		leftSide = local[i];
 		rightSide = local[i + 1];
 		while ((rightSide - leftSide) > 2 * eps)
@@ -83,6 +87,7 @@ bool NonLinEq::Bisection()
 				leftSide = middle;
 			else
 				rightSide = middle;
+			stream << middle << "\n";
 		}
 		roots.push_back(middle);
 	}
@@ -137,10 +142,13 @@ bool NonLinEq::Newton()
 	double rightSide;
 
 	std::vector<int> iterations;
-
+	int indexRoot = 1;
 	for (int i = 0; i < size; i += 2)
 	{
 		iterations.push_back(0);
+
+		stream << "Root " << indexRoot << "\n";
+		indexRoot++;
 
 		leftSide = local[i];
 		rightSide = local[i + 1];
@@ -153,7 +161,8 @@ bool NonLinEq::Newton()
 			iterations.back()++;
 
 			x_k = x;
-			x = x_k - fun(x_k) / Derivative(x_k);
+			//TODO: D
+			x = x_k - fun(x_k) / dfun(x_k);
 
 			//ѕроверка на выход из отрезка локализации
 			if (x<leftSide || x>rightSide)
@@ -165,7 +174,7 @@ bool NonLinEq::Newton()
 				else
 					x = x_k - (fun(x_k)*(x_k - leftSide)) / (fun(x_k) - fun(leftSide));
 			}
-
+			stream << x << "\n";
 		} while (fabs(x_k - x) > eps);
 
 		roots.push_back(x);

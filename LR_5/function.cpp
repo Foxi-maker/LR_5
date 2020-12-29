@@ -21,22 +21,27 @@ double testf::fun4(double val)
 	return R1 + R2 + 1.2;
 }
 
-double testf::fun5(double val)
+double testf::dfun4(double val)
 {
-	return pow(val,4)-1;
+	double R1 = 0.5*(-3 + 3 * val*val + 4 * pow(val, 3))*cos(0.5*(3 - pow(30, 1. / 3) - 3 * val + pow(val, 3) + pow(val, 4)));
+	
+	double R2 = (-1 + 6 * sqrt(3)*pow(val, 2));
+
+	double R31 = (1 - 6 * sqrt(2) - 2 * val + 4 * sqrt(3)*pow(val, 3));
+	double R32=  R31/ (3 * sqrt(2) + val - 2 * sqrt(3)*pow(val, 3));
+	double R3 = 1 / cosh(R32);
+	double R4 = pow(R3, 2);
+	
+	double R51 = 3 * sqrt(2) + val - 2 * sqrt(3)*pow(val, 3);
+	double R5 = pow(R51, 2);
+	return R1 + R2*R4 / R5;
 }
 
-//testf::system system0
+double testf::fun5(double val)
+{
+	return pow(val, 4) - 1;
+}
 
-//double testf::system::fun1(double val1, double val2)
-//{
-//	return pow(val1, 2) - pow(val2, 2) - 15.;
-//}
-//
-//double testf::system::fun2(double val1, double val2)
-//{
-//	return val1 * val2 + 4;
-//}
 
 double testf::system11(double val1, double val2)
 {
